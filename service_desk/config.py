@@ -1,11 +1,19 @@
 from pathlib import Path
 
-from dotenv import load_dotenv
-import os
+from pydantic import BaseModel
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-load_dotenv(Path('../.env'))
-env = os.environ
+class DBSettings(BaseModel):
+    hostname: str
+    database: str
+    username: str
+    password: str
+    port: int
 
 
-print(env)
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=Path('../.env'), env_file_encoding='utf-8', extra='ignore',
+                                      env_nested_delimiter='__')
+    app_name: str
+    db: DBSettings
